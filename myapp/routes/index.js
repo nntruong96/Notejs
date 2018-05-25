@@ -51,7 +51,7 @@ router.get('/createitem',function(req,res){
       	res.end();
     }
     else {
-	    fs.readFile( __dirname + "/" + req.query.namelist+'.JSON', 'utf8', function (err, data) {
+	    fs.readFile( __dirname + "/" + req.query.namelist+'.json', 'utf8', function (err, data) {
 	        if (err ) {
 	         	console.log(err);
 	            res.render('index',{title: 'Cannot find list'});
@@ -92,7 +92,7 @@ router.get('/updateitem',function(req,res){
       	res.end();
     }
     else {
-	    fs.readFile( __dirname + "/" + req.query.namelist+'.JSON', 'utf8', function (err, data) {
+	    fs.readFile( __dirname + "/" + req.query.namelist+'.json', 'utf8', function (err, data) {
 	        if (err || req.query.namelist =='') {
 	        	console.log(err);
 	        	res.render('index',{title: 'Cannot find list'})    
