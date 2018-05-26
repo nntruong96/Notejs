@@ -24,7 +24,7 @@ router.get('/getlist', function(req, res) {
       });
 });
 
-router.post('/deletelist',function(req,res){
+router.delete('/deletelist',function(req,res){
 	var list = 'listitem.json';
     fs.unlink( __dirname + "/" + list,function(err){
         if(err) {
@@ -83,8 +83,8 @@ router.post('/createitem',urlencodedParser,function(req,res){
 	}
 })
 
-router.post('/updateitem',urlencodedParser,function(req,res){
-    var check = false, n = req.body.nameitem;  v =-1;
+router.put('/updateitem',urlencodedParser,function(req,res){
+    var check = false, n = req.body.nameitem;  v =req.body.value;
     var list = 'listitem.json';
     console.log(v);
     if(n == '' || v == ''){
