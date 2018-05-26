@@ -5,9 +5,7 @@ var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 router.get('/', function(req, res, next) {
-	res.status(200).json({
-		message:'My web'
-	})
+	res.render('index',{title:'My web'});
 });
 
 router.get('/getlist', function(req, res) {
