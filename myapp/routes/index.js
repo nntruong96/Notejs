@@ -1,162 +1,167 @@
 var express = require('express');
 var fs = require('fs');
 var router = express.Router();
+var bodyParser = require('body-parser');
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'My web' });
+	res.status(200).json({
+		message:'My web'
+	})
 });
 
-router.get('/getlist', function(req, res, next) {
- // res.render('getlist', { title: req.query.namelist });
- 	var name = [],value = [];
-    fs.readFile( __dirname + "/" + req.query.namelist+'.json', 'utf8', function (err, data) {
+router.get('/getlist', function(req, res) {
+	var list = 'listitem.json';
+    fs.readFile( __dirname + "/" + list, 'utf8', function (err, data) {
         if (err) {
         	console.log(err);
-          	res.render('index',{title: 'Cannot find list'})
+        	res.end(err);
         }
         else{
-            data = JSON.parse( data );
-            console.log(data);
-            for( i in data.item){
-            	name[i] = data.item[i].name;
-            	value[i] = data.item[i].value;
-            }
-            res.render('getlist',{title:req.query.namelist, name : name , value: value})
-            res.end();
+        	res.end(data)
          }
       });
 });
 
-router.get('/deletelist',function(req,res){
-    fs.unlink( __dirname + "/" + req.query.namelist+'.json',function(err){
+router.post('/deletelist',function(req,res){
+	var list = 'listitem.json';
+    fs.unlink( __dirname + "/" + list,function(err){
         if(err) {
          	console.log(err);
-         	console.log(__dirname + "/" +req.query.namelist+'.json');
-         	res.render('index',{title: 'Cannot find list'})
+         	res.end(err);
         }
         else {
-    	    res.render('index',{title: 'Deleted'})  
+        	res.status(200).json({
+				message:'Deleted'
+			})
         }
       })
    })
 
-router.get('/createitem',function(req,res){
-    var obj = {
-        item: []
-        }; 
+router.post('/createitem',urlencodedParser,function(req,res){
+    var list = 'listitem.json';
     var n,v,check = true;
-    n = req.query.nameitem;  v = req.query.value;
+    n = req.body.nameitem;  v = req.body.value;
+  
     if(n == '' || v ==''){
-      	res.render('index',{title: 'Cannot create item'})
-      	res.end();
+       	res.status(200).json({
+				message:'Cannot createitem'
+			})
     }
     else {
-	    fs.readFile( __dirname + "/" + req.query.namelist+'.JSON', 'utf8', function (err, data) {
+    	var item = {
+	   		[n] : {
+	     		"name" : n,
+	     	 	"value": v 
+	   		}
+		}
+		//console.log(item);
+	    fs.readFile( __dirname + "/" + list, 'utf8', function (err, data) {
 	        if (err ) {
 	         	console.log(err);
-	            res.render('index',{title: 'Cannot find list'});
 	        }
 	        else {
-	            console.log(req.query.namelist);
 	            data = JSON.parse( data );
-	            var i;
-	            for( i in data.item){
-	               obj.item.push({name: data.item[i].name, value: data.item[i].value});
-	               if(n == data.item[i].name )
-	                  check = false;
+	            for(i in data){
+	            	if( i == n){
+	            		res.status(200).json({
+							message:'Cannot createitem'
+						})
+						res.end();
+	            	}
 	            }
-
-	            if(check)
-	               obj.item.push({name: n, value: v});
-	            var tmp = JSON.stringify(obj);
-	            fs.writeFile(__dirname + "/" +req.query.namelist+'.json',tmp,function(err){
-	                if(!check){
-	                	res.render('index',{title: 'Cannot create item'})}
-	                else{
-	                    res.render('index',{title: 'Created'})
-	                }
-	            });
-	            
-	        }
+	        data[n] = item[n];
+	      	data =JSON.stringify(data) 
+            fs.writeFile(__dirname + "/" +list,data,function(err){
+                res.status(200).json({
+					message:'Created'
+				})
+            });   
+	         }
 	    });
 	}
 })
 
-router.get('/updateitem',function(req,res){
-    var obj = {
-        item: []
-        }; 
-    var check, n = req.query.nameitem, v = req.query.value;
+router.post('/updateitem',urlencodedParser,function(req,res){
+    var check = false, n = req.body.nameitem;  v = req.body.value;
+    var list = 'listitem.json';
     if(n == '' || v ==''){
-    	res.render('index',{title: 'Cannot updated item'})
-      	res.end();
+    	res.status(200).json({
+				message:'Cannot Update'
+			})
+    	res.end();
     }
     else {
-	    fs.readFile( __dirname + "/" + req.query.namelist+'.JSON', 'utf8', function (err, data) {
-	        if (err || req.query.namelist =='') {
+    	var item = {
+	   		[n] : {
+	     		"name" : n,
+	     	 	"value": v 
+	   		}
+		}
+	    fs.readFile( __dirname + "/" + list, 'utf8', function (err, data) {
+	        if (err) {
 	        	console.log(err);
-	        	res.render('index',{title: 'Cannot find list'})    
 	        }
 	        else{
 	            data = JSON.parse( data );
-	            var i,n = req.query.nameitem, v = req.query.value;
-	            for( i in data.item){
-	                if(data.item[i].name != n)
-	        	        obj.item.push({name: data.item[i].name, value: data.item[i].value});
-	                else if(v!='') {
-	            	    obj.item.push({name: n, value: v});
+	            for( i in data){
+	            	if(i == n)
+	                	data[i] = item[n];
 	                	check = true;
 	                }
 	            }
-	            var tmp = JSON.stringify(obj);
-	            fs.writeFile(__dirname + "/" +req.query.namelist+'.json',tmp,function(err){
-	                if(!check){
-	                	res.write('Cannot find name');}
-	                else{
-	              	    res.render('index',{title: 'Updated'})
-	                }
-	            });
-	        }  
+	            var data = JSON.stringify(data);
+	            if(!check){
+	                	res.status(200).json({
+							message:'Cannot find name item'
+						})
+			    		res.end();
+			    }
+			    else{
+		            fs.writeFile(__dirname + "/" +list,data,function(err){		                		            
+	              	    res.status(200).json({
+							message:'Updated'
+						})
+			    		res.end();		             		                
+		            });  
+	            }
 	    });
 	}
 })
 
-router.get('/deleteitem',function(req,res){
-    var obj = {
-        item: []
-        }; 
-    var check, n = req.query.nameitem,i;
-    if(n == ''){
-      	res.render('index',{title: 'Cannot find item'})
-      	res.end();
-    }
-    else {
-	    fs.readFile( __dirname + "/" + req.query.namelist+'.json', 'utf8', function (err, data) {
+router.post('/deleteitem',urlencodedParser,function(req,res){
+	var list = 'listitem.json';
+    var check = false, n = req.body.nameitem;
+	    fs.readFile( __dirname + "/" + list, 'utf8', function (err, data) {
 		    if (err) {
 	        	console.log(err);
-	          	res.render('index',{title: 'Cannot find list'})
 	        }
 	        else {
 		        data = JSON.parse(data);
-		        for( i in data.item){
-		           if(data.item[i].name != n )
-		              obj.item.push({name: data.item[i].name, value: data.item[i].value});
-		           else check = true;
-		        }
-		        var tmp = JSON.stringify(obj);
-
-		        fs.writeFile(__dirname + "/"+req.query.namelist+'.json',tmp,function(err){
-		           if(err)res.write('ERR');
-		           else 
-		           if(!check){
-		           		res.render('index',{title: 'Cannot find name'})}
-		           else{
-		             	res.render('index',{title: 'deleted'})
-		           }
-		        });
+		        for(var i in data)
+		        	if(i == n)
+		        		check = true;
+		        if(check){
+		        	delete data[n];
+			        var data = JSON.stringify(data);
+			        fs.writeFile(__dirname + "/"+list,data,function(err){ 
+			        	if(err){
+			        		console.log(err);
+			        	}
+			        	else 
+			        	res.status(200).json({
+							message:'Deleted'
+						})
+		        	});
+			    }
+			    else{
+			    	res.status(200).json({
+						message:'Cannot find name item'
+					})
+		      		res.end();
+			    }
 		    }
 		});
-	}
 })
 
 module.exports = router;

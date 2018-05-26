@@ -3,43 +3,4 @@ extends layout
 block content
   h1= title
   //p Welcome to #{title}
-  body
-  form(action='/getlist', method='get')
-    p
-      |Name list: 
-      input(type='text', name='namelist', value='')
-      input(type='submit', value='Get list')
-
-  form(action='/deletelist', method='get')
-    p
-      |Name list: 
-      input(type='text', name='namelist', value='')
-      input(type='submit', value='Delete')
-
-  form(action='/createitem', method='get')
-    p
-      |Name list: 
-      input(type='text', name='namelist', value='')
-      |Name item: 
-      input(type='text', name='nameitem', value='')
-      |Value item: 
-      input(type='text', name='value', value='')
-      input(type='submit', value='Create item')
-
-  form(action='/updateitem', method='get')
-    p
-      |Name list: 
-      input(type='text', name='namelist', value='')
-      |Name item: 
-      input(type='text', name='nameitem', value='')
-      |Value item: 
-      input(type='text', name='value', value='')
-      input(type='submit', value='Update item')
-
-  form(action='/deleteitem', method='get')
-    p
-      |Name list: 
-      input(type='text', name='namelist', value='')
-      |Name item: 
-      input(type='text', name='nameitem', value='')
-      input(type='submit', value='Delete item')
+  
