@@ -5,6 +5,9 @@ var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 router.get('/', function(req, res, next) {
+	// res.status(200).json({
+	// 	message:'My web'
+	// })
 	res.render('index',{title:'My web'});
 });
 
@@ -47,7 +50,6 @@ router.post('/createitem',urlencodedParser,function(req,res){
 			})
     }
     else {
-<<<<<<< HEAD
     	var item = {
 	   		[n] : {
 	     		"name" : n,
@@ -56,9 +58,6 @@ router.post('/createitem',urlencodedParser,function(req,res){
 		}
 		//console.log(item);
 	    fs.readFile( __dirname + "/" + list, 'utf8', function (err, data) {
-=======
-	    fs.readFile( __dirname + "/" + req.query.namelist+'.json', 'utf8', function (err, data) {
->>>>>>> 1d1e2b2eaa8ba6873e3fd86a99eb30baa34994e0
 	        if (err ) {
 	         	console.log(err);
 	        }
@@ -85,16 +84,16 @@ router.post('/createitem',urlencodedParser,function(req,res){
 })
 
 router.post('/updateitem',urlencodedParser,function(req,res){
-    var check = false, n = req.body.nameitem;  v = req.body.value;
+    var check = false, n = req.body.nameitem;  v =-1;
     var list = 'listitem.json';
-    if(n == '' || v ==''){
+    console.log(v);
+    if(n == '' || v == ''){
     	res.status(200).json({
 				message:'Cannot Update'
 			})
     	res.end();
     }
     else {
-<<<<<<< HEAD
     	var item = {
 	   		[n] : {
 	     		"name" : n,
@@ -103,10 +102,6 @@ router.post('/updateitem',urlencodedParser,function(req,res){
 		}
 	    fs.readFile( __dirname + "/" + list, 'utf8', function (err, data) {
 	        if (err) {
-=======
-	    fs.readFile( __dirname + "/" + req.query.namelist+'.json', 'utf8', function (err, data) {
-	        if (err || req.query.namelist =='') {
->>>>>>> 1d1e2b2eaa8ba6873e3fd86a99eb30baa34994e0
 	        	console.log(err);
 	        }
 	        else{
@@ -136,7 +131,7 @@ router.post('/updateitem',urlencodedParser,function(req,res){
 	}
 })
 
-router.post('/deleteitem',urlencodedParser,function(req,res){
+router.delete('/deleteitem',urlencodedParser,function(req,res){
 	var list = 'listitem.json';
     var check = false, n = req.body.nameitem;
 	    fs.readFile( __dirname + "/" + list, 'utf8', function (err, data) {
@@ -150,6 +145,7 @@ router.post('/deleteitem',urlencodedParser,function(req,res){
 		        		check = true;
 		        if(check){
 		        	delete data[n];
+		        	console.log(data);
 			        var data = JSON.stringify(data);
 			        fs.writeFile(__dirname + "/"+list,data,function(err){ 
 			        	if(err){
