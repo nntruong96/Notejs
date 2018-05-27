@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
 	res.render('index',{title:'My web'});
 });
 
-router.get('/getlist', function(req, res) {
+router.get('/listitem', function(req, res) {
 	var list = 'listitem.json';
     fs.readFile( __dirname + "/" + list, 'utf8', function (err, data) {
         if (err) {
@@ -24,7 +24,7 @@ router.get('/getlist', function(req, res) {
       });
 });
 
-router.delete('/deletelist',function(req,res){
+router.delete('/listitem',function(req,res){
 	var list = 'listitem.json';
     fs.unlink( __dirname + "/" + list,function(err){
         if(err) {
@@ -39,7 +39,7 @@ router.delete('/deletelist',function(req,res){
       })
    })
 
-router.post('/createitem',urlencodedParser,function(req,res){
+router.post('/listitem',urlencodedParser,function(req,res){
     var list = 'listitem.json';
     var n,v,check = true;
     n = req.body.nameitem;  v = req.body.value;
@@ -83,7 +83,7 @@ router.post('/createitem',urlencodedParser,function(req,res){
 	}
 })
 
-router.put('/updateitem',urlencodedParser,function(req,res){
+router.put('/listitem',urlencodedParser,function(req,res){
     var check = false, n = req.body.nameitem;  v =req.body.value;
     var list = 'listitem.json';
     console.log(v);
@@ -131,7 +131,7 @@ router.put('/updateitem',urlencodedParser,function(req,res){
 	}
 })
 
-router.delete('/deleteitem',urlencodedParser,function(req,res){
+router.delete('/listitem/:nameitem',urlencodedParser,function(req,res){
 	var list = 'listitem.json';
     var check = false, n = req.body.nameitem;
 	    fs.readFile( __dirname + "/" + list, 'utf8', function (err, data) {
