@@ -21,15 +21,11 @@ router.get('/listitem', function(req, res) {
         	res.end(err);
         }
         else{
-<<<<<<< HEAD
    //      	res.status(200).json({
 			// 	message:'GETTT'
 			// })
         	res.end(data);
         	//console.log()
-=======
-        	res.end(data)
->>>>>>> 94f2d0dcbe0d845edea3449355cd0c0205647ade
          }
       });
 });
