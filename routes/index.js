@@ -19,7 +19,6 @@ router.get('/listitem', function(req, res) {
         	res.end(err);
         }
         else{
-        	data = JSON.parse(data);
         	res.end(data)
          }
       });
