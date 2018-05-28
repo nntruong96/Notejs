@@ -5,10 +5,12 @@ var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 router.get('/', function(req, res, next) {
-	// res.status(200).json({
-	// 	message:'My web'
-	// })
-	res.render('index',{title:'My web'});
+	res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type'); // If needed
+    res.setHeader('Access-Control-Allow-Credentials', true); // If needed
+  //  res.send('cors problem fixed:)');
+    res.render('index',{title:'My web'});
 });
 
 router.get('/listitem', function(req, res) {
@@ -19,8 +21,11 @@ router.get('/listitem', function(req, res) {
         	res.end(err);
         }
         else{
-        	data = JSON.parse(data);
-        	res.end(data)
+   //      	res.status(200).json({
+			// 	message:'GETTT'
+			// })
+        	res.end(data);
+        	//console.log()
          }
       });
 });
@@ -134,7 +139,7 @@ router.put('/listitem',urlencodedParser,function(req,res){
 
 router.delete('/listitem/:nameitem',urlencodedParser,function(req,res){
 	var list = 'listitem.json';
-    var check = false, n = req.body.nameitem;
+    var check = false, n = req.params.nameitem;
 	    fs.readFile( __dirname + "/" + list, 'utf8', function (err, data) {
 		    if (err) {
 	        	console.log(err);
