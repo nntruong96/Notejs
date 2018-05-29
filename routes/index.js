@@ -5,10 +5,6 @@ var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 router.get('/', function(req, res, next) {
-	// res.setHeader('Access-Control-Allow-Origin', '*');
- //    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
- //    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type'); // If needed
- //    res.setHeader('Access-Control-Allow-Credentials', true); // If needed
     res.render('index',{title:'My web'});
 });
 
@@ -36,9 +32,7 @@ router.delete('/listitem',function(req,res){
          	res.end(err);
         }
         else {
-        	res.status(200).json({
-				message:'Deleted'
-			})
+        	res.status(200).json({message:'Deleted'})
         }
       })
    })
@@ -49,9 +43,7 @@ router.post('/listitem',urlencodedParser,function(req,res){
     n = req.body.nameitem;  v = req.body.value;
   
     if(n == '' || v ==''){
-       	res.status(200).json({
-				message:'Cannot createitem'
-			})
+       	res.status(200).json({message:'Cannot createitem'})
     }
     else {
     	var item = {
@@ -69,18 +61,14 @@ router.post('/listitem',urlencodedParser,function(req,res){
 	            data = JSON.parse( data );
 	            for(i in data){
 	            	if( i == n){
-	            		res.status(200).json({
-							message:'Cannot createitem'
-						})
+	            		res.status(200).json({message:'Cannot createitem'})
 						res.end();
 	            	}
 	            }
 	        data[n] = item[n];
 	      	data =JSON.stringify(data) 
             fs.writeFile(__dirname + "/" +list,data,function(err){
-                res.status(200).json({
-					message:'Created'
-				})
+                res.status(200).json({message:'Created'})
             });   
 	         }
 	    });
@@ -90,11 +78,9 @@ router.post('/listitem',urlencodedParser,function(req,res){
 router.put('/listitem',urlencodedParser,function(req,res){
     var check = false, n = req.body.nameitem;  v =req.body.value;
     var list = 'listitem.json';
-    console.log(v);
+  //  console.log(n);
     if(n == '' || v == ''){
-    	res.status(200).json({
-				message:'Cannot Update'
-			})
+    	res.status(200).json({message:'Cannot Update'})
     	res.end();
     }
     else {
@@ -111,26 +97,23 @@ router.put('/listitem',urlencodedParser,function(req,res){
 	        else{
 	            data = JSON.parse( data );
 	            for( i in data){
-	            	if(i == n)
+	            	if(i == n){
 	                	data[i] = item[n];
 	                	check = true;
 	                }
-	            }
+	       		}
 	            var data = JSON.stringify(data);
-	            if(!check){
-	                	res.status(200).json({
-							message:'Cannot find name item'
-						})
+	            if(check == false){
+	                	res.status(200).json({message:'Cannot find item'})
 			    		res.end();
 			    }
 			    else{
 		            fs.writeFile(__dirname + "/" +list,data,function(err){		                		            
-	              	    res.status(200).json({
-							message:'Updated'
-						})
+	              	    res.status(200).json({message:'Updated'})
 			    		res.end();		             		                
 		            });  
-	            }
+	          	}
+	        }
 	    });
 	}
 })
@@ -156,15 +139,11 @@ router.delete('/listitem/:nameitem',urlencodedParser,function(req,res){
 			        		console.log(err);
 			        	}
 			        	else 
-			        	res.status(200).json({
-							message:'Deleted'
-						})
+			        	res.status(200).json({message:'Deleted'})
 		        	});
 			    }
 			    else{
-			    	res.status(200).json({
-						message:'Cannot find name item'
-					})
+			    	res.status(200).json({message:'Cannot find name item'})
 		      		res.end();
 			    }
 		    }
