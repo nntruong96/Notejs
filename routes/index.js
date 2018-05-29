@@ -2,7 +2,7 @@ var express = require('express');
 var fs = require('fs');
 var router = express.Router();
 var bodyParser = require('body-parser');
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 router.get('/', function(req, res, next) {
 	res.setHeader('Access-Control-Allow-Origin', '*');
@@ -13,6 +13,9 @@ router.get('/', function(req, res, next) {
     res.render('index',{title:'My web'});
 });
 
+
+
+
 router.get('/listitem', function(req, res) {
 	var list = 'listitem.json';
     fs.readFile( __dirname + "/" + list, 'utf8', function (err, data) {
@@ -21,11 +24,7 @@ router.get('/listitem', function(req, res) {
         	res.end(err);
         }
         else{
-   //      	res.status(200).json({
-			// 	message:'GETTT'
-			// })
         	res.end(data);
-        	//console.log()
          }
       });
 });
