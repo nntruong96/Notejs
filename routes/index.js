@@ -9,8 +9,6 @@ router.get('/', function(req, res, next) {
 });
 
 
-
-
 router.get('/listitem', function(req, res) {
 	var list = 'listitem.json';
     fs.readFile( __dirname + "/" + list, 'utf8', function (err, data) {
@@ -24,18 +22,18 @@ router.get('/listitem', function(req, res) {
       });
 });
 
-router.delete('/listitem',function(req,res){
-	var list = 'listitem.json';
-    fs.unlink( __dirname + "/" + list,function(err){
-        if(err) {
-         	console.log(err);
-         	res.end(err);
-        }
-        else {
-        	res.status(200).json({message:'Deleted'})
-        }
-      })
-   })
+// router.delete('/listitem',function(req,res){
+// 	var list = 'listitem.json';
+//     fs.unlink( __dirname + "/" + list,function(err){
+//         if(err) {
+//          	console.log(err);
+//          	res.end(err);
+//         }
+//         else {
+//         	res.status(200).json({message:'Deleted'})
+//         }
+//       })
+//    })
 
 router.post('/listitem',urlencodedParser,function(req,res){
     var list = 'listitem.json';
@@ -46,30 +44,35 @@ router.post('/listitem',urlencodedParser,function(req,res){
        	res.status(200).json({message:'Cannot createitem'})
     }
     else {
-    	var item = {
-	   		[n] : {
-	     		"name" : n,
-	     	 	"value": v 
-	   		}
-		}
-		//console.log(item);
 	    fs.readFile( __dirname + "/" + list, 'utf8', function (err, data) {
 	        if (err ) {
 	         	console.log(err);
 	        }
 	        else {
 	            data = JSON.parse( data );
+	            var id = Object.keys(data).length + 1;
+	            var item = {
+			   		[id] : {
+			     		"name" : n,
+			     	 	"value": v 
+			   		}
+				}
+				
+				//console.log(length);
 	            for(i in data){
-	            	if( i == n){
+	            	if( data[i].name == n){
 	            		res.status(200).json({message:'Cannot createitem'})
 						res.end();
+						check = false;
 	            	}
 	            }
-	        data[n] = item[n];
-	      	data =JSON.stringify(data) 
-            fs.writeFile(__dirname + "/" +list,data,function(err){
-                res.status(200).json({message:'Created'})
-            });   
+	        	if(check){
+			        data[id] = item[id];
+			      	data =JSON.stringify(data) 
+		            fs.writeFile(__dirname + "/" +list,data,function(err){
+		                res.status(200).json({message:'Created'})
+            		});
+            	}   
 	         }
 	    });
 	}
@@ -84,21 +87,22 @@ router.put('/listitem',urlencodedParser,function(req,res){
     	res.end();
     }
     else {
-    	var item = {
-	   		[n] : {
-	     		"name" : n,
-	     	 	"value": v 
-	   		}
-		}
 	    fs.readFile( __dirname + "/" + list, 'utf8', function (err, data) {
 	        if (err) {
 	        	console.log(err);
 	        }
 	        else{
 	            data = JSON.parse( data );
+	            var id = Object.keys(data).length + 1;
+	            var item = {
+			   		[id] : {
+			     		"name" : n,
+			     	 	"value": v 
+			   		}
+				}
 	            for( i in data){
-	            	if(i == n){
-	                	data[i] = item[n];
+	            	if(data[i].name == n){
+	                	data[i] = item[id];
 	                	check = true;
 	                }
 	       		}
@@ -118,21 +122,24 @@ router.put('/listitem',urlencodedParser,function(req,res){
 	}
 })
 
-router.delete('/listitem/:nameitem',urlencodedParser,function(req,res){
+router.delete('/listitem',urlencodedParser,function(req,res){
 	var list = 'listitem.json';
-    var check = false, n = req.params.nameitem;
+    var check = false, n = req.body.nameitem;
 	    fs.readFile( __dirname + "/" + list, 'utf8', function (err, data) {
 		    if (err) {
 	        	console.log(err);
 	        }
 	        else {
 		        data = JSON.parse(data);
+		        var id;
 		        for(var i in data)
-		        	if(i == n)
+		        	if(data[i].name == n){
 		        		check = true;
+		        		id = i;
+		        	}
 		        if(check){
-		        	delete data[n];
-		        	console.log(data);
+		        	delete data[id];
+		        //	console.log(data);
 			        var data = JSON.stringify(data);
 			        fs.writeFile(__dirname + "/"+list,data,function(err){ 
 			        	if(err){

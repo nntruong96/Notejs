@@ -33,18 +33,6 @@
           }
         }
       },
-      "delete": {
-        "tags": [
-          "API"
-        ],
-        "summary": "Delete list of item",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
       "post": {
         "tags": [
           "API"
@@ -102,9 +90,7 @@
             }
           }
         }
-      }
-    },
-    "/listitem/{nameitem}": {
+      },
       "delete": {
         "tags": [
           "API"
@@ -117,11 +103,13 @@
         ],
         "parameters": [
           {
+            "in": "body",
             "name": "nameitem",
-            "in": "path",
             "description": "name of the item that needs to be deleted",
             "required": true,
-            "type": "string"
+            "schema": {
+              "$ref": "#/definitions/nameitem"
+            }
           }
         ],
         "responses": {
@@ -146,6 +134,17 @@
       },
       "xml": {
         "name": "item"
+      }
+    },
+    "nameitem": {
+      "type": "object",
+      "properties": {
+        "nameitem": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "nameitem"
       }
     },
     "listitem": {
