@@ -50,7 +50,12 @@ router.post('/listitem',urlencodedParser,function(req,res){
 	        }
 	        else {
 	            data = JSON.parse( data );
-	            var id = Object.keys(data).length + 1;
+	            var id = 0;
+	            for(i in data )
+	            	id = i;
+	            id ++;
+	            //var id = Object.keys(data).length ;
+	            console.log(data[id]);
 	            var item = {
 			   		[id] : {
 			     		"name" : n,
